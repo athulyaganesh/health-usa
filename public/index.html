@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body {
+            padding: 10px;
+            background-color: #f0f0f0; /* Light gray background color */
+        }
+        .histogram-container {
+            display: inline-flex; /* Set the display property to inline-flex */
+            width: 100%; /* Optional: Adjust the width as needed */
+        }
+        .histogram-container > div {
+            margin-right: 10px; /* Optional: Add spacing between histograms */
+        }
+    </style>
+</head>
+<body>
+    <div class="title">
+        <h1 class="title">US Health Data Visualization</h1> 
+        Select the <b>first</b> attribute:  <select id="dropdown1"></select> &nbsp; 
+        Select the <b>second</b> attribute: <select id="dropdown2"></select>
+        <ul>
+            <li><b>Created by: </b>Athulya Ganesh</li>
+            <li><b>Data: </b>US Heart and Stroke Atlas (.csv provided by Dr. Aurisano)</li>
+            <li><b>Libraries Used: </b>D3 Javascript Library</li>
+        </ul>
+     </div>
+    
+    <div class="histogram-container"> <!-- Container for both histograms -->
+        <div id="histogram1"></div> <!-- Histogram 1 -->
+        <div id="histogram2"></div> <!-- Histogram 2 -->
+        <div id="scatterplot"></div>
+    </div>
+
+    <script src="js/d3.v6.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/histogram.js"></script>
+    <script src="js/scatterplot.js"></script>
+</body>
+</html>
