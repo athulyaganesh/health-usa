@@ -4,7 +4,7 @@ class Histogram {
         parentElement: _config.parentElement,
         containerWidth: _config.containerWidth || 400,
         containerHeight: _config.containerHeight || 200,
-        margin: { top: 20, bottom: 50, right: 30, left: 50 },
+        margin: { top: 20, bottom: 65, right: 30, left: 65 },
       };
       this.attributeName = _attributeName;
       this.number = _num;

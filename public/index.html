@@ -4,40 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
     <style>
         body {
-            padding: 10px;
+            padding: 7px;
             background-color: #f0f0f0; /* Light gray background color */
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
         }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .info ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .attribute-select {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end; /* Align to the right end */
+            margin-bottom: 10px;
+        }
+
+        .attribute-select > label {
+            margin-right: 10px;
+        }
+
         .histogram-container {
             display: inline-flex; /* Set the display property to inline-flex */
             width: 100%; /* Optional: Adjust the width as needed */
         }
+
         .histogram-container > div {
-            margin-right: 10px; /* Optional: Add spacing between histograms */
+            margin-right: 20px; /* Optional: Add spacing between histograms */
         }
     </style>
 </head>
 <body>
-    <div class="title">
-        <h1 class="title">US Health Data Visualization</h1> 
-        Select the <b>first</b> attribute:  <select id="dropdown1"></select> &nbsp; 
-        Select the <b>second</b> attribute: <select id="dropdown2"></select>
-        <ul>
-            <li><b>Created by: </b>Athulya Ganesh</li>
-            <li><b>Data: </b>US Heart and Stroke Atlas (.csv provided by Dr. Aurisano)</li>
-            <li><b>Libraries Used: </b>D3 Javascript Library</li>
-        </ul>
-     </div>
-    
+    <h1>US Health Data Visualization</h1>
+    <div class="header">
+        <div class="info">
+            <ul>
+                <li><b>Created by: </b>Athulya Ganesh</li>
+                <li><b>Data: </b>US Heart and Stroke Atlas (.csv provided by Dr. Aurisano)</li>
+                <li><b>Libraries Used: </b>D3 Javascript Library</li>
+            </ul>
+        </div>
+        <div class="attribute-select">
+            <div>
+                <label for="dropdown1">Select the <b>1st</b> attribute:</label>
+                <select id="dropdown1"></select><br><br>
+                <label for="dropdown2">Select the <b>2nd</b> attribute:</label>
+                <select id="dropdown2"></select>
+            </div>
+        </div>
+    </div>
+
     <div class="histogram-container"> <!-- Container for both histograms -->
         <div id="histogram1"></div> <!-- Histogram 1 -->
         <div id="histogram2"></div> <!-- Histogram 2 -->
         <div id="scatterplot"></div>
     </div>
 
-    <script src="js/d3.v6.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/histogram.js"></script>
     <script src="js/scatterplot.js"></script>

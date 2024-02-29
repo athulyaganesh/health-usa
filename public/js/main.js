@@ -1,12 +1,9 @@
-let filteredCounties = [], geoData, countiesData;
+let filteredCounties = [], geoData;
 let histogram1,
   histogram2,
-  barchart1,
-  barchart2,
-  scatterplot,
-  connectedScatterplot,
-  choropleth1,
-  choropleth2;
+  scatterplot
+//   choropleth1,
+//   choropleth2;
 let updateVisualizations;
 
 const attributeOptionsData = {
@@ -72,6 +69,15 @@ const attributeOptionsData = {
     }
 };
 
+
+const tooltip = d3
+  .select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("position", "absolute")
+  .style("visibility", "hidden"); 
+
+
 Promise.all([
     d3.json("data/counties.json"),
     d3.csv("data/national_health_data.csv"),
@@ -128,55 +134,100 @@ dropdown2.selectedIndex = Object.keys(attributeOptionsData).length - 1;
     let filteredCounties = []; // Initialize as an empty array
 
 
-  // Create the charts/graphs
-  histogram1 = new Histogram(
+//   // Create the charts/graphs
+//   histogram1 = new Histogram(
+//     {
+//         parentElement: "#histogram1",
+//         containerHeight: 200,
+//         containerWidth: 400
+//     },
+//     dropdown1.value, 1, countiesData
+// );
+// histogram2 = new Histogram(
+//     {
+//         parentElement: "#histogram2",
+//         containerHeight: 200,
+//         containerWidth: 400
+//     },
+//     dropdown2.value, 2, countiesData
+// );
+
+// sscatterplot = new Scatterplot(
+//     {
+//       targetElement: "#scatterplot", // Use #scatterplot to target the element by its ID
+//       width: 400, // Adjust width as needed
+//       height: 200, // Adjust height as needed
+//     },
+//     dropdown1.value,
+//     dropdown2.value,
+//     countiesData
+// );
+
+
+// Create the charts/graphs
+histogram1 = new Histogram(
     {
         parentElement: "#histogram1",
-        containerHeight: 200,
-        containerWidth: 400
+        containerHeight: 250,
+        containerWidth: 375
     },
     dropdown1.value, 1, countiesData
 );
+
 histogram2 = new Histogram(
     {
         parentElement: "#histogram2",
+        containerHeight: 250,
+        containerWidth: 375
     },
     dropdown2.value, 2, countiesData
 );
+
+scatterplot = new Scatterplot(
+    {
+      targetElement: "#scatterplot", // Use #scatterplot to target the element by its ID
+      width: 375, // Adjust width as needed
+      height: 250, // Adjust height as needed
+    },
+    dropdown1.value,
+    dropdown2.value,
+    countiesData
+);
+
+
+
+// After initializing the scatterplot, check if it's present in the DOM
+const scatterplotContainer = document.querySelector("#scatterplot");
+
+if (scatterplotContainer) {
+    console.log("Scatterplot container is present in the DOM.");
+    
+    const scatterplotSVG = scatterplotContainer.querySelector("svg");
+    
+    if (scatterplotSVG) {
+        console.log("Scatterplot SVG is present in the DOM.");
+    } else {
+        console.error("Scatterplot SVG is not present in the DOM. Check Scatterplot class initialization.");
+    }
+} else {
+    console.error("Scatterplot container is not present in the DOM. Check parentElement in Scatterplot class initialization.");
+}
 
 
     updateVisualizations = (currentVis) => {
         const selectedAttr1 = dropdown1.value;
         const selectedAttr2 = dropdown2.value;
 
-        // Update all of the visualizations' content
-        // if (selectedAttr1 === "urban_rural_status") barchart1.updateVis();
-        // if (selectedAttr2 === "urban_rural_status") barchart2.updateVis();
-        if (selectedAttr1 !== "urban_rural_status") histogram1.updateVis();
-        if (selectedAttr2 !== "urban_rural_status") histogram2.updateVis();
-        // if (
-        //     selectedAttr1 === "urban_rural_status" ||
-        //     selectedAttr2 === "urban_rural_status"
-        // )
-        //     connectedScatterplot.updateVis();
-        // if (
-        //     selectedAttr1 !== "urban_rural_status" ||
-        //     selectedAttr2 !== "urban_rural_status"
-        // )
-        //     scatterplot.updateVis();
+        histogram1.updateVis();
+        histogram2.updateVis();
+        scatterplot.refreshChart();
         // choropleth1.updateVis();
         // choropleth2.updateVis();
 
         // Modify the brushes of the visualizations
-        histogram1.brushG.call(histogram1.brush.move, null);
-        histogram2.brushG.call(histogram2.brush.move, null);
-        // connectedScatterplot.brushG.call(connectedScatterplot.brush.move, null);
-        // if (currentVis != barchart1)
-        //     barchart1.brushG.call(barchart1.brush.move, null);
-        // if (currentVis != barchart2)
-        //     barchart2.brushG.call(barchart2.brush.move, null);
-        // if (currentVis != scatterplot)
-        //     scatterplot.brushG.call(scatterplot.brush.move, null);
+        // histogram1.brushG.call(histogram1.brush.move, null);
+        // histogram2.brushG.call(histogram2.brush.move, null);
+        // scatterplot.brushG.call(scatterplot.brush.move, null);
         // if (currentVis != choropleth1)
         //     choropleth1.brushG.call(choropleth1.brush.move, null);
         // if (currentVis != choropleth2)
@@ -212,6 +263,7 @@ histogram2 = new Histogram(
 
         // Update the histogram for the first attribute
         histogram1.attributeName = selectedAttr;
+        scatterplot.attrX = selectedAttr; 
 
         updateVisualizations(null);
     };
@@ -220,27 +272,15 @@ histogram2 = new Histogram(
         const histogram2Element = document.getElementById("histogram2");
 
         if (histogram2Element) {
-            if (selectedAttr === "urban_rural_status") {
-                histogram2Element.style.display = "none";
-            } else {
                 histogram2Element.style.display = "block";
-            }
         }
 
         // If either attribute is for the urban/rural status,
         //  show the connected scatterplot instead of the regular scatterplot
-        if (
-            selectedAttr === "urban_rural_status" ||
-            dropdown1.value === "urban_rural_status"
-        ) {
-
-        } else {
-
-        }
 
         // Update the histogram for the second attribute
         histogram2.attributeName = selectedAttr;
-
+        scatterplot.attrY = selectedAttr; 
         updateVisualizations(null);
     };
 })
