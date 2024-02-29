@@ -1,34 +1,32 @@
 class Histogram {
-    constructor(_config, _attributeName, _num, _countiesData) {
+    constructor(_config, _graphName, _num, _countiesData) {
       this.config = {
-        parentElement: _config.parentElement,
-        containerWidth: _config.containerWidth || 400,
-        containerHeight: _config.containerHeight || 200,
-        margin: { top: 20, bottom: 65, right: 30, left: 65 },
+        parent: _config.parent,
+        width: _config.width || 400,
+        height: _config.height || 200,
+        margin: { top: 20, bottom: 37, right: 30, left: 65 },
       };
-      this.attributeName = _attributeName;
+      this.graphName = _graphName;
       this.number = _num;
-      this.countiesData = _countiesData; // Assigning countiesData to a class property
+      this.countiesData = _countiesData; 
   
       this.initVis();
     }
   
     initVis() {
       const vis = this;
-      //console.log("name: ", vis.attributeName); 
-
       vis.svg = d3
-        .select(vis.config.parentElement)
+        .select(vis.config.parent)
         .append("svg")
         .attr(
           "width",
-          vis.config.containerWidth +
+          vis.config.width +
             vis.config.margin.left +
             vis.config.margin.right
         )
         .attr(
           "height",
-          vis.config.containerHeight +
+          vis.config.height +
             vis.config.margin.top +
             vis.config.margin.bottom
         )
@@ -38,20 +36,19 @@ class Histogram {
           `translate(${vis.config.margin.left},${vis.config.margin.top})`
         );
   
-      vis.x = d3.scaleLinear().range([0, vis.config.containerWidth]);
+      vis.x = d3.scaleLinear().range([0, vis.config.width]);
       vis.xAxis = vis.svg
         .append("g")
-        .attr("transform", `translate(0,${vis.config.containerHeight})`);
+        .attr("transform", `translate(0,${vis.config.height})`);
   
-      vis.y = d3.scaleLinear().range([vis.config.containerHeight, 0]);
+      vis.y = d3.scaleLinear().range([vis.config.height, 0]);
       vis.yAxis = vis.svg.append("g");
   
-      // Y axis label
       vis.svg
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - vis.config.margin.left)
-        .attr("x", 0 - vis.config.containerHeight / 2)
+        .attr("x", 0 - vis.config.height / 2)
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Number of Counties");
@@ -62,9 +59,8 @@ class Histogram {
         .brushX()
         .extent([
           [0, 0],
-          [vis.config.containerWidth, vis.config.containerHeight],
+          [vis.config.width, vis.config.height],
         ])
-        // Reset the filtered counties
         .on("start", () => (filteredCounties = []))
         .on("end", (result) => vis.filterBySelection(result, vis));
   
@@ -73,10 +69,9 @@ class Histogram {
   
     updateVis() {
       const vis = this;
-      //console.log("name: ", vis.attributeName); 
      vis.data = vis.countiesData.filter(
   (d) =>
-    d[vis.attributeName] != -1 &&
+    d[vis.graphName] != -1 &&
     (filteredCounties.length == 0 ||
       (filteredCounties.length != 0 &&
         filteredCounties.find(
@@ -84,12 +79,12 @@ class Histogram {
         )))
 );
   
-      vis.x.domain([0, d3.max(vis.data, (d) => d[vis.attributeName])]);
+      vis.x.domain([0, d3.max(vis.data, (d) => d[vis.graphName])]);
       vis.xAxis.call(d3.axisBottom(vis.x));
   
       const histogram = d3
         .histogram()
-        .value((d) => d[vis.attributeName])
+        .value((d) => d[vis.graphName])
         .domain(vis.x.domain())
         .thresholds(vis.x.ticks(50));
   
@@ -98,22 +93,21 @@ class Histogram {
       vis.y.domain([0, d3.max(bins, (d) => d.length)]);
       vis.yAxis.call(d3.axisLeft(vis.y));
   
-      // X axis label
       vis.svg
         .selectAll("text.xLabel")
-        .data([vis.attributeName])
+        .data([vis.graphName])
         .join("text")
         .attr("class", "xLabel")
         .attr(
           "transform",
           "translate(" +
-            vis.config.containerWidth / 2 +
+            vis.config.width / 2 +
             " ," +
-            (vis.config.containerHeight + 35) +
+            (vis.config.height + 35) +
             ")"
         )
         .style("text-anchor", "middle")
-        .text(attributeOptionsData[vis.attributeName].label);
+        .text(attributeOptionsData[vis.graphName].label);
 
   
       vis.svg
@@ -124,9 +118,9 @@ class Histogram {
         .attr("x", 1)
         .attr("transform", (d) => `translate(${vis.x(d.x0)}, ${vis.y(d.length)})`)
         .attr("width", (d) => vis.x(d.x1) - vis.x(d.x0))
-        .attr("height", (d) => vis.config.containerHeight - vis.y(d.length))
-        .style("fill", attributeOptionsData[vis.attributeName].color)
-        // Attach event listeners
+        .attr("height", (d) => vis.config.height - vis.y(d.length))
+        .style("fill", attributeOptionsData[vis.graphName].color)
+
         .on("mouseover", function (event, d) {
           d3.select(this).attr("stroke-width", "2").attr("stroke", "white");
           tooltip.style("visibility", "visible").html(`
@@ -134,7 +128,7 @@ class Histogram {
               d.length
             } ${d.length === 1 ? "County" : "Counties"}</div>
             <div><b>${
-              attributeOptionsData[vis.attributeName].label
+              attributeOptionsData[vis.graphName].label
             }</b>: ${d.x0}-${d.x1}</div>
           `);
         })
@@ -170,20 +164,18 @@ class Histogram {
     }
   
     filterBySelection(result, vis) {
-      if (!result.sourceEvent) return; // Only transition after input
+      if (!result.sourceEvent) return; 
   
       const extent = result.selection;
   
       if (!extent) {
-        // Reset the counties filter (include them all)
         filteredCounties = [];
       } else {
-        // Filter the counties
         const range = [vis.x.invert(extent[0]), vis.x.invert(extent[1])];
   
         filteredCounties = vis.countiesData
           .filter((d) => {
-            const attrVal = d[vis.attributeName];
+            const attrVal = d[vis.graphName];
   
             return attrVal >= range[0] && attrVal <= range[1];
           })

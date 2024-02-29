@@ -8,7 +8,7 @@ class Scatterplot {
       };
       this.attrX = attrX;
       this.attrY = attrY;
-      this.countiesData = countiesData; // Assigning countiesData to a class property
+      this.countiesData = countiesData; 
 
   
       this.initializeChart();
@@ -17,16 +17,16 @@ class Scatterplot {
     initializeChart() {
         let chart = this;
     
-        // Ensure that the parent element exists in the DOM
-        let parentElement = document.querySelector(chart.settings.targetElement);
-        if (!parentElement) {
-            console.error("Parent element not found in the DOM:", chart.settings.targetElement);
-            return;
-        }
+        // // Ensure that the parent element exists in the DOM
+        // let parentElement = document.querySelector(chart.settings.targetElement);
+        // if (!parentElement) {
+        //     console.error("Parent element not found in the DOM:", chart.settings.targetElement);
+        //     return;
+        // }
     
         // SVG setup
         chart.svg = d3
-            .select(parentElement)
+            .select(this.settings.targetElement)
             .append('svg')
             .attr(
                 'width',
@@ -42,14 +42,12 @@ class Scatterplot {
                 `translate(${chart.settings.margins.left},${chart.settings.margins.top})`
             );
     
-        // Scale setup
         chart.xScale = d3.scaleLinear().range([0, chart.settings.width]);
         chart.xAxis = chart.svg.append('g').attr('transform', `translate(0,${chart.settings.height})`);
     
         chart.yScale = d3.scaleLinear().range([chart.settings.height, 0]);
         chart.yAxis = chart.svg.append('g');
     
-        // Brushing feature
         chart.brushGroup = chart.svg.append('g').attr('class', 'brush-area');
     
         chart.brush = d3.brush()
@@ -66,22 +64,18 @@ class Scatterplot {
     refreshChart() {
         const vis = this;
     
-        // Filter data
         vis.data = vis.countiesData.filter((d) => d[vis.attrX] != -1 && d[vis.attrY] != -1);
     
-        // Define x scale
+        //  x scale
         vis.x = d3.scaleLinear().range([0, vis.settings.width]); // Use vis.settings.width
         vis.x.domain([0, d3.max(vis.data, (d) => d[vis.attrY])]);
     
-        // Define y scale
         vis.y = d3.scaleLinear().range([vis.settings.height, 0]); // Use vis.settings.height
         vis.y.domain([0, d3.max(vis.data, (d) => d[vis.attrX])]);
     
-        // Update axes
         vis.xAxis.call(d3.axisBottom(vis.x));
         vis.yAxis.call(d3.axisLeft(vis.y));
     
-        // X axis label
         vis.svg
             .selectAll("text.xLabel")
             .data([vis.attrX])
@@ -98,7 +92,6 @@ class Scatterplot {
             .style("text-anchor", "middle")
             .text(attributeOptionsData[vis.attrY].label);
     
-        // Y axis label
         vis.svg
             .selectAll("text.yLabel")
             .data([vis.attrX])
@@ -116,7 +109,6 @@ class Scatterplot {
             .style("text-anchor", "middle")
             .text(attributeOptionsData[vis.attrX].label);
     
-        // Plot data points
         vis.svg
             .selectAll("circle.regularPoint")
             .data(vis.data)
@@ -138,7 +130,6 @@ class Scatterplot {
                 } else return 1;
             });
     
-        // Mouse event handlers
         d3.selectAll("circle.regularPoint")
             .on("mouseover", function (event, d) {
                 d3.select(this).attr("stroke-width", "2").attr("stroke", "white");
@@ -184,14 +175,12 @@ class Scatterplot {
     labelAxis() {
       let chart = this;
   
-      // X-axis label
       chart.svg.append('text')
         .attr('class', 'axis-label x-axis')
         .attr('transform', `translate(${chart.settings.width / 2},${chart.settings.height + chart.settings.margins.bottom - 15})`)
         .style('text-anchor', 'middle')
         .text(attributeOptionsData[chart.attrY].label);
   
-      // Y-axis label
       chart.svg.append('text')
         .attr('class', 'axis-label y-axis')
         .attr('transform', 'rotate(-90)')
@@ -221,14 +210,12 @@ class Scatterplot {
   
     applyBrushing(event) {
       let chart = this;
-      if (!event.sourceEvent) return; // Only act on user input
+      if (!event.sourceEvent) return;
   
       const selectionArea = event.selection;
       if (!selectionArea) {
-        // Reset selection
         selectedCounties = [];
       } else {
-        // Apply filtering based on brush
         const xDomain = [chart.xScale.invert(selectionArea[0][0]), chart.xScale.invert(selectionArea[1][0])];
         const yDomain = [chart.yScale.invert(selectionArea[1][1]), chart.yScale.invert(selectionArea[0][1])];
   
@@ -247,12 +234,10 @@ class Scatterplot {
       chart.refreshVisualizations();
     }
   
-    // Placeholder for methods to handle mouse events
     handleMouseOver() {}
     handleMouseOut() {}
     handleMouseDown() {}
   
-    // Placeholder for method to refresh other visualizations based on brushing
     refreshVisualizations() {}
   }
   

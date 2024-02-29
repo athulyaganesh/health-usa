@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization</title>
     <style>
+  
+        .states {
+            fill: none;
+          }
+
         body {
             padding: 7px;
-            background-color: #f0f0f0; /* Light gray background color */
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -38,14 +42,27 @@
             margin-right: 10px;
         }
 
+        .cloropeth-container {
+            display: inline-flex; /* Changed from inline-flex to flex for better control */
+            justify-content: center; /* Center the contents horizontally */
+            width: 100%;
+            padding-top: -200px;
+        }
+        
         .histogram-container {
-            display: inline-flex; /* Set the display property to inline-flex */
-            width: 100%; /* Optional: Adjust the width as needed */
+            display: flex; /* Adjusted for consistency and control */
+            justify-content: center; /* Center the contents horizontally */
+            width: 100%;
+            margin-bottom: 0px;
         }
-
-        .histogram-container > div {
-            margin-right: 20px; /* Optional: Add spacing between histograms */
+        
+        .histogram-container > div, .cloropeth-container > div {
+            margin-right: 20px; /* Adjust spacing between elements */
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0px;
         }
+        
     </style>
 </head>
 <body>
@@ -68,15 +85,23 @@
         </div>
     </div>
 
-    <div class="histogram-container"> <!-- Container for both histograms -->
-        <div id="histogram1"></div> <!-- Histogram 1 -->
-        <div id="histogram2"></div> <!-- Histogram 2 -->
+    <div class="histogram-container"> 
+        <div id="histogram1"></div> 
+        <div id="histogram2"></div> 
         <div id="scatterplot"></div>
+    </div>
+    <div class = "cloropeth-container">
+        <div id = "choropleth1"></div>
+        <div id = "choropleth2"></div>
     </div>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script src="js/topojson.v3.js"></script>
+
     <script src="js/main.js"></script>
+    
     <script src="js/histogram.js"></script>
     <script src="js/scatterplot.js"></script>
+    <script src = "js/choropleth.js"></script>
 </body>
 </html>
